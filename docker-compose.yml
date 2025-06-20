@@ -1,0 +1,37 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    ports:
+      - '3001:3001'
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_PASSWORD=
+      - NODE_ENV=development
+    depends_on:
+      redis:
+        condition: service_healthy
+    # networks:
+    #   - rest-api-net
+
+  # redis:
+  #   container_name: redis
+  #   image: redis:latest
+  #   ports:
+  #     - '6379:6379'
+  #   healthcheck:
+  #     test: ['CMD', 'redis-cli', 'ping']
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 5
+  #   networks:
+  #     - rest-api-net
+
+# networks:
+#   rest-api-net:
+#     driver: bridge

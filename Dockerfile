@@ -1,16 +1,17 @@
-# syntax=docker/dockerfile:1
-FROM golang:alpine AS builder
+# Use the official Node.js image
+FROM node:20-alpine
 
-WORKDIR /opt/app
-# add gcc for CGO
+# Copy package.json and package-lock.json first to install dependencies
+COPY package.json package-lock.json ./
 
-RUN apk add build-base
+# Install dependencies
+RUN npm install
+
+# Copy all project files into the container
 COPY . .
 
-RUN go build -o main
+# Expose the port the app runs on
+EXPOSE 3001
 
-FROM alpine:latest
-WORKDIR /opt
-# copy over the binaries we built in the last step
-COPY --from=builder /opt/app ./
-CMD ["./main"]
+# Run the application
+CMD ["npm", "run", "prod"]
